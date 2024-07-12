@@ -33,3 +33,26 @@ Enable ownership on the volume<br>
 
 Create a tar from the volume<br>
 `sudo gtar -cvf fw.tar -C <mountpoint> .`<br>
+
+## Partitioning
+First, we need to boot the SSH ramdisk, enter DFU mode on your device and run Legacy iOS Kit<br>
+`./restore.sh`<br>
+
+Then navigate to `Other Utilities > SSH Ramdisk` and enter `11A470a` for the build number, follow the steps to boot the ramdisk, then select `Connect to SSH`<br>
+
+Now once we are in the ramdisk, we need to partition the disk<br>
+`gptfdisk /dev/rdisk0s1`<br>
+
+Delete the existing partitions<br>
+`d <enter> 1 <enter> d <enter>`<br>
+
+Now create the new partitions<br>
+`n <enter> 1 <enter> <enter> 524294 <enter> <enter>`<br>
+`n <enter> <enter> <default value - 4> <enter> <enter>`<br>
+
+Rename the new partitions<br>
+`c <enter> 1 <enter> System <enter>`<br>
+`c <enter> 2 <enter> Data <enter>`<br>
+
+Write the new partition table<br>
+`w <enter> Y <enter>`<br>
