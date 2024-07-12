@@ -1,5 +1,3 @@
-<link rel="stylesheet" type="text/css" href="styles.css">
-
 # iOS 6 iPhone 5C downgrade guide
 This guide will show you how to install iOS 6 on your iPhone 5C, please note that it is very broken, touch does **not** work, and the device will kernel panic a few seconds after booting.
 ## Disclaimer
@@ -16,13 +14,13 @@ I am **not** responsible for any damage to your devices caused by following this
 - [iBoot32Patcher](https://github.com/iH8sn0w/iBoot32Patcher) to patch iBoot components
 - [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS
 ## Preparations
-First decrypt the RootFS DMG, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)
-`dmg extract encrypted.dmg extract.dmg -k <key>`
-Then convert it to UDZO format
-`dmg build extract.dmg udzo.dmg`
-Mount the DMG, take note of the mount point
-`hdiutil attach udzo.dmg`
-Enable ownership on the volume
-`sudo hdiutil enableOwnership <mountpoint>`
-Create a tar from the volume
-`sudo gtar -cvf fw.tar -C <mountpoint> .`
+First decrypt the RootFS DMG, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)  
+`dmg extract encrypted.dmg extract.dmg -k <key>`  
+Then convert it to UDZO format  
+`dmg build extract.dmg udzo.dmg`  
+Mount the DMG, take note of the mount point  
+`hdiutil attach udzo.dmg`  
+Enable ownership on the volume  
+`sudo hdiutil enableOwnership <mountpoint>`  
+Create a tar from the volume  
+`sudo gtar -cvf fw.tar -C <mountpoint> .`  
