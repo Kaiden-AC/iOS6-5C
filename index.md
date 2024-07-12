@@ -1,7 +1,9 @@
 # iOS 6 iPhone 5C downgrade guide
 This guide will show you how to install iOS 6 on your iPhone 5C, please note that it is very broken, touch does **not** work, and the device will kernel panic a few seconds after booting.<br>
+
 ## Disclaimer
 I am **not** responsible for any damage to your devices caused by following this guide. Please proceed with caution and at your own risk.<br>
+
 ## Requirements
 - **A macOS system**, you might be able to do this on Linux but I highly recommend using macOS<br>
 - [IDA Pro](https://hex-rays.com/ida-pro) for patching the kernelcache<br>
