@@ -107,6 +107,4 @@ Decompress the kernelcache from your iPhone 5 6.x iPSW<br>
 
 Open your decompressed kernelcache in IDA Pro, make sure your settings are the same as below when opening it<br>
 
-<p align="center">
-  <img src="images/kernelcache-settings-ida.png" alt="IDA Pro settings for kernelcache" />
-</p>
+![IDA Pro settings for kernelcache](images/kernelcache-settings-ida.png)<br>
