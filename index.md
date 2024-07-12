@@ -12,7 +12,7 @@ I am **not** responsible for any damage to your devices caused by following this
 - [Legacy iOS Kit](https://github.com/LukeZGD/Legacy-iOS-Kit) for the SSH ramdisk to install the iOS 6 RootFS on to the device
 - [reimagine](https://github.com/danzatt/reimagine) to decrypt firmware components
 - [iBoot32Patcher](https://github.com/iH8sn0w/iBoot32Patcher) to patch iBoot components
-- [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS
+- [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS  
 ## Preparations
 First decrypt the RootFS DMG, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)  
 `dmg extract encrypted.dmg extract.dmg -k <key>`  
