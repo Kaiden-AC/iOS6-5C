@@ -7,7 +7,7 @@ This guide will show you how to install iOS 6 on your iPhone 5C, please note tha
 I am **not** responsible for any damage to your devices caused by following this guide. Please proceed with caution and at your own risk.<br>
 
 ## Note
-When I put stuff in <> it means an action, so <enter> means you would press enter, <default value - 4> means you type the default value but subtract 4.<br>
+When I put stuff in `<>` it means an action, so `<enter>` means you would press enter, `<default value - 4>` means you type the default value but subtract 4.<br>
 
 ## Requirements
 - **A macOS system**, you might be able to do this on Linux but I highly recommend using macOS<br>
@@ -18,6 +18,7 @@ When I put stuff in <> it means an action, so <enter> means you would press ente
 - [libirecovery](https://formulae.brew.sh/formula/libirecovery) to send bootchain components<br>
 - [Legacy iOS Kit](https://github.com/LukeZGD/Legacy-iOS-Kit) for the SSH ramdisk to install the iOS 6 RootFS on to the device<br>
 - [reimagine](https://github.com/danzatt/reimagine) to decrypt firmware components<br>
+- [image3maker](https://github.com/darwin-on-arm/image3maker) to repack img3 images
 - [iBoot32Patcher](https://github.com/iH8sn0w/iBoot32Patcher) to patch iBoot components<br>
 - [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS<br>
 
@@ -81,3 +82,28 @@ Now move files from /private/var<br>
 Unmount both partitions and reboot the device<br>
 `umount /mnt1 /mnt2`<br>
 `reboot_bak`<br>
+
+## Patching boot components
+First decrypt iBSS and iBEC from your iPhone 5C 7.0 iPSW<br>
+`reimagine iBSS.boardconfig.RELEASE.dfu iBSS.raw -iv <iv> -k <key> -r`<br>
+`reimagine iBEC.boardconfig.RELEASE.dfu iBEC.raw -iv <iv> -k <key> -r`<br>
+
+Patch the iBSS and iBEC<br>
+`iBoot32Patcher iBSS.raw iBSS.patched`<br>
+`iBoot32Patcher iBEC.raw iBEC.patched -b "-v amfi=0xff cs_enforcement_disable=1"`<br>
+
+Pack the iBSS and iBEC into an img3 container<br>
+`image3maker -f iBSS.patched -t ibss -o iBSS.img3`<br>
+`image3maker -f iBEC.patched -t ibec -o iBEC.img3`<br>
+
+Decrypt the DeviceTree from your iPhone 5 6.x iPSW<br>
+`reimagine DeviceTree.boardconfig.img3 devicetree.img3 -iv <iv> -k <key>`<br>
+
+Decrypt the kernelcache from your iPhone 5 6.x iPSW<br>
+`reimagine kernelcache.release.boardconfig kernelcache.dec -iv <iv> -k <key>`<br>
+
+Decompress the kernelcache from your iPhone 5 6.x iPSW<br>
+`xpwntool kernelcache.release.boardconfig kernelcache.raw -iv <iv> -k <key>`<br>
+
+Open your decompressed kernelcache in IDA Pro, make sure your settings are the same as below when opening it<br>
+![IDA Pro settings for kernelcache](images/kernelcache-settings-ida.png)<br>
