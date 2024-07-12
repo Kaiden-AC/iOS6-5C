@@ -19,11 +19,15 @@ I am **not** responsible for any damage to your devices caused by following this
 ## Preparations
 First decrypt the RootFS DMG, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
 `dmg extract encrypted.dmg extract.dmg -k <key>`<br>
+
 Then convert it to UDZO format<br>
 `dmg build extract.dmg udzo.dmg`<br>
+
 Mount the DMG, take note of the mount point<br>
 `hdiutil attach udzo.dmg`<br>
+
 Enable ownership on the volume<br>
 `sudo hdiutil enableOwnership <mountpoint>`<br>
+
 Create a tar from the volume<br>
 `sudo gtar -cvf fw.tar -C <mountpoint> .`<br>
