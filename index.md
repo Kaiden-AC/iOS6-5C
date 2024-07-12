@@ -6,6 +6,9 @@ This guide will show you how to install iOS 6 on your iPhone 5C, please note tha
 ## Disclaimer
 I am **not** responsible for any damage to your devices caused by following this guide. Please proceed with caution and at your own risk.<br>
 
+## Note
+When I put stuff in <> it means an action, so <enter> means you would press enter, <default value - 4> means you type the default value but subtract 4.<br>
+
 ## Requirements
 - **A macOS system**, you might be able to do this on Linux but I highly recommend using macOS<br>
 - [IDA Pro](https://hex-rays.com/ida-pro) for patching the kernelcache<br>
@@ -56,3 +59,25 @@ Rename the new partitions<br>
 
 Write the new partition table<br>
 `w <enter> Y <enter>`<br>
+
+Now we need to create filesystems<br>
+`/sbin/newfs_hfs -s -v System -J -b 4096 -n a=4096,c=4096,e=4096 /dev/disk0s1s1`<br>
+`/sbin/newfs_hfs -s -v Data -J -P -b 4096 -n a=4096,c=4096,e=4096 /dev/disk0s1s2`<br>
+
+## Extracting RootFS
+Mount the System partition<br>
+`mount_hfs /dev/disk0s1s1 /mnt1`<br>
+
+Extract the RootFS tar over SSH<br>
+`cat fw.tar | ssh -p 6414 root@localhost "cd /mnt1; tar xvf -"`<br>
+*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+
+After that completes, we need to move files to the Data partition, first mount the Data partition<br>
+`mount_hfs /dev/disk0s1s2 /mnt2`<br>
+
+Now move files from /private/var<br>
+`mv -v /mnt1/private/var/* /mnt2`<br>
+
+Unmount both partitions and reboot the device<br>
+`umount /mnt1 /mnt2`<br>
+`reboot_bak`<br>
