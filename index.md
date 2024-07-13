@@ -18,12 +18,11 @@ I am **not** responsible for any damage to your devices caused by following this
 - [OothecaPickle](https://github.com/OothecaPickle) for xpwn (*Note: This is a fork of multiple forks, go to the repository to see who made the original and other forks*)
 
 ## Note
-When I put stuff in `<>` it doesn't mean include the `<>`, `<enter>` means you would press enter, `<default value - 4>` means you type the default value but subtract 4.<br>
+When I use angle brackets (`< >`), they indicate placeholders. Do not include the brackets themselves in your input. For instance, `<enter>` means press the Enter key, and `<default value - 4>` means you should input the default value minus 4.<br>
 
 ## Requirements
 - **A macOS system**, you might be able to do this on Linux but I highly recommend using macOS<br>
 - [IDA Pro](https://hex-rays.com/ida-pro) for patching the kernelcache<br>
-- **Any hex editor**, I recommend [Hex Fiend](https://hexfiend.com)<br>
 - **An iPhone 5 6.x iPSW, and an iPhone 5C 7.0 iPSW**, you can get these from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
 - [gnu-tar](https://formulae.brew.sh/formula/gnu-tar) to compress the RootFS<br>
 - [fixkeybag](https://raw.githubusercontent.com/Kaiden-AC/iOS6-5C/main/fixkeybag) for generating the system keybag
@@ -158,32 +157,39 @@ Once the file is open, navigate to **Edit > Select all** in the toolbar, then pr
 *Note: If it asks "Undefine already existing code/data?" click Yes*<br>
 
 Once the kernelcache is fully analyzed, navigate to **Search > Text...**<br>
-Make sure **Find all occurrences** is checked, and search for "could not find system ID"<br>
-After the search is finished, you should have 4 results<br>
+Now search for "could not find system ID"<br>
 
-![IDA Pro search results](images/search-results-ida.png)<br>
-
-Double click the first result, you should see something like this<br>
+Once the search is finished, you should see something like this<br>
 
 ![IDA Pro could not find system ID function](images/could-not-find-system-id-function-ida.png)<br>
 
 Place your cursor just before `BL` and switch to hex view<br>
 
-![IDA Pro BL hex](images/bl-hex-ida.png)<br>
+![IDA Pro BL hex 1](images/bl-hex-1-ida.png)<br>
 
-First take note of just the 4 bytes that are highlighted, then copy all the bytes on that line, open the decompressed kernelcache in your hex editor and find where those bytes are, for Hex Fiend press **Option + F**, make sure in the upper left corner it is set to **Hex**, paste the bytes in and press **Next**<br>
+Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with 00BF00BF<br>
 
-<p align="left">
-  <img src="images/bl-hex-fiend.png" alt="Hex Fiend BL hex" style="background-color: transparent;" />
-</p>
+![IDA Pro NOP hex 1](images/nop-hex-1-ida.png)<br>
 
-Replace the 4 bytes that were highlighted in IDA Pro with 00BF00BF in your hex editor<br>
+Now switch back to IDA view and navigate to **Search > Text...** again, this time searching for "XIP is still set"<br>
 
-<p align="left">
-  <img src="images/nop-hex-fiend.png" alt="Hex Fiend NOP hex" style="background-color: transparent;" />
-</p>
+Once the search has finished, you should see something like this<br>
 
-Now repeat **exactly the same process**, but this time searching for "XIP is still set" in IDA Pro, and no need to repeat opening the kernelcache in IDA Pro as it's already open<br>
+![IDA Pro XIP is still set function](images/xip-is-still-set-function-ida.png)<br>
+
+Place your cursor just before `BL` and switch to hex view<br>
+
+![IDA Pro BL hex 2](images/bl-hex-2-ida.png)<br>
+
+Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with 00BF00BF<br>
+
+![IDA Pro NOP hex 2](images/nop-hex-2-ida.png)<br>
+
+Now switch back to IDA view and navigate to **Edit > Patch program > Apply patches to input file...**<br>
+Leave default settings and press **OK**<br>
+
+Now recompress the kernelcache<br>
+`xpwntool kernelcache.raw kernelcache.img3 -t kernelcache.dec`<br>
 
 ## Booting the device
 
