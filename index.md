@@ -167,7 +167,7 @@ Place your cursor just before `BL` and switch to hex view<br>
 
 ![IDA Pro BL hex 1](images/bl-hex-1-ida.png)<br>
 
-Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with 00BF00BF<br>
+Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with `00BF00BF`<br>
 
 ![IDA Pro NOP hex 1](images/nop-hex-1-ida.png)<br>
 
@@ -181,7 +181,7 @@ Place your cursor just before `BL` and switch to hex view<br>
 
 ![IDA Pro BL hex 2](images/bl-hex-2-ida.png)<br>
 
-Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with 00BF00BF<br>
+Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with `00BF00BF`<br>
 
 ![IDA Pro NOP hex 2](images/nop-hex-2-ida.png)<br>
 
