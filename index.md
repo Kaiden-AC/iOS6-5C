@@ -109,10 +109,11 @@ Open your decompressed kernelcache in IDA Pro, make sure your settings are the s
 
 ![IDA Pro settings for kernelcache](images/kernelcache-settings-ida.png)<br>
 
-Once the file is open, navigate to `Edit > Select all` in the toolbar, then press **C**, then click **Analyze**.<br>
+Once the file is open, navigate to **Edit > Select all** in the toolbar, then press **C**, then click **Analyze**.<br>
 *Note: If it asks "Undefine already existing code/data?" click Yes*<br>
 
-Once the kernelcache is fully analyzed, navigate to **Search > Text...**, make sure "Find all occurrences" is checked, and search for `could not find system ID`.<br>
+Once the kernelcache is fully analyzed, navigate to **Search > Text...**<br>
+Make sure **Find all occurrences** is checked, and search for **could not find system ID**.<br>
 After the search is finished, you should have 4 results<br>
 
 ![IDA Pro search results](images/search-results-ida.png)<br>
