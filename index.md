@@ -115,8 +115,18 @@ Once the file is open, navigate to `Edit > Select all` in the toolbar, then pres
 Once the kernelcache is fully analyzed, navigate to `Search > Text...`, make sure "Find all occurrences" is checked, and search for `could not find system ID`.<br>
 After the search is finished, you should have 4 results<br>
 
-![IDA Pro search results 1](images/search-results-ida-1.png)<br>
+![IDA Pro search results](images/search-results-ida.png)<br>
 
 Double click the first result, you should see something like this<br>
 
-![IDA Pro search results 1](images/could-not-find-system-id-function-ida.png)<br>
+![IDA Pro could not find system ID function](images/could-not-find-system-id-function-ida.png)<br>
+
+Place your cursor just before `BL` and switch to hex view<br>
+
+![IDA Pro BL hex](images/bl-hex-ida.png)<br>
+
+First take note of just the 4 bytes that are highlighted, then copy all the bytes on that line, open the decompressed kernelcache in your hex editor and find where those bytes are, for Hex Fiend press **Option + F**, make sure in the upper left corner it is set to **Hex**, paste the bytes in and press **Next**<br>
+
+![Hex Fiend BL hex](images/bl-hex-hex-fiend)<br>
+
+
