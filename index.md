@@ -6,6 +6,17 @@ This guide will show you how to install iOS 6 on your iPhone 5C, please note tha
 ## Disclaimer
 I am **not** responsible for any damage to your devices caused by following this guide. Please proceed with caution and at your own risk.<br>
 
+## Credits
+- [NyanSatan](https://x.com/nyan_satan) for the 32-Bit iOS Dualboot guide and fixkeybag
+- [throwaway](https://x.com/throwaway167074) for telling me how they booted iOS 6 on the iPhone 5C
+- [libimobiledevice](https://github.com/libimobiledevice) for irecovery
+- [LukeZGD](https://github.com/LukeZGD) for Legacy iOS Kit
+- [dora2ios](https://x.com/dora2ios) for ipwnder_lite
+- [danzatt](https://github.com/danzatt) for reimagine
+- [Darwin on ARM Project](https://github.com/darwin-on-arm) for image3maker
+- [iH8sn0w](https://x.com/ih8sn0w) for iBoot32Patcher
+- [OothecaPickle](https://github.com/OothecaPickle) for xpwn (*Note: This is a fork of multiple forks, go to the repository to see who made the original and other forks*)
+
 ## Note
 When I put stuff in `<>` it doesn't mean include the `<>`, `<enter>` means you would press enter, `<default value - 4>` means you type the default value but subtract 4.<br>
 
@@ -15,12 +26,14 @@ When I put stuff in `<>` it doesn't mean include the `<>`, `<enter>` means you w
 - **Any hex editor**, I recommend [Hex Fiend](https://hexfiend.com)<br>
 - **An iPhone 5 6.x iPSW, and an iPhone 5C 7.0 iPSW**, you can get these from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
 - [gnu-tar](https://formulae.brew.sh/formula/gnu-tar) to compress the RootFS<br>
-- [libirecovery](https://formulae.brew.sh/formula/libirecovery) to send bootchain components<br>
+- [fixkeybag](https://raw.githubusercontent.com/Kaiden-AC/iOS6-5C/main/fixkeybag) for generating the system keybag
+- [irecovery](https://formulae.brew.sh/formula/libirecovery) to send bootchain components<br>
 - [Legacy iOS Kit](https://github.com/LukeZGD/Legacy-iOS-Kit) for the SSH ramdisk to install the iOS 6 RootFS on to the device<br>
-- [reimagine](https://github.com/danzatt/reimagine) to decrypt firmware components<br>
+- [ipwnder_lite](https://github.com/dora2ios/ipwnder_lite) to put the device in pwndfu mode
+- [reimagine](https://github.com/Kaiden-AC/reimagine/releases/tag/v0.0.1) to decrypt firmware components<br>
 - [image3maker](https://github.com/darwin-on-arm/image3maker) to repack img3 images
 - [iBoot32Patcher](https://github.com/iH8sn0w/iBoot32Patcher) to patch iBoot components<br>
-- [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS<br>
+- [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will use **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS<br>
 
 ## Preparations
 First decrypt the RootFS DMG, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
@@ -172,4 +185,24 @@ Replace the 4 bytes that were highlighted in IDA Pro with 00BF00BF in your hex e
 
 Now repeat **exactly the same process**, but this time searching for "XIP is still set" in IDA Pro, and no need to repeat opening the kernelcache in IDA Pro as it's already open<br>
 
+## Booting the device
 
+Send iBSS<br>
+`irecovery -f iBSS.img3`<br>
+
+Send iBEC<br>
+`irecovery -f iBEC.img3`<br>
+
+Send DeviceTree<br>
+`irecovery -f devicetree.img3`<br>
+
+Execute DeviceTree<br>
+`irecovery -c devicetree`<br>
+
+Send kernelcache<br>
+`irecovery -f kernelcache.img3`<br>
+
+Boot the device<br>
+`irecovery -c bootx`<br>
+
+**Done!**
