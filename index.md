@@ -7,7 +7,7 @@ This guide will show you how to install iOS 6 on your iPhone 5C, please note tha
 I am **not** responsible for any damage to your devices caused by following this guide. Please proceed with caution and at your own risk.<br>
 
 ## Note
-When I put stuff in `<>` it means an action, so `<enter>` means you would press enter, `<default value - 4>` means you type the default value but subtract 4.<br>
+When I put stuff in `<>` it doesn't mean include the `<>`, `<enter>` means you would press enter, `<default value - 4>` means you type the default value but subtract 4.<br>
 
 ## Requirements
 - **A macOS system**, you might be able to do this on Linux but I highly recommend using macOS<br>
@@ -109,11 +109,11 @@ Open your decompressed kernelcache in IDA Pro, make sure your settings are the s
 
 ![IDA Pro settings for kernelcache](images/kernelcache-settings-ida.png)<br>
 
-Once the file is open, navigate to **Edit > Select all** in the toolbar, then press **C**, then click **Analyze**.<br>
+Once the file is open, navigate to **Edit > Select all** in the toolbar, then press **C**, then click **Analyze**<br>
 *Note: If it asks "Undefine already existing code/data?" click Yes*<br>
 
 Once the kernelcache is fully analyzed, navigate to **Search > Text...**<br>
-Make sure **Find all occurrences** is checked, and search for **could not find system ID**.<br>
+Make sure **Find all occurrences** is checked, and search for **could not find system ID**<br>
 After the search is finished, you should have 4 results<br>
 
 ![IDA Pro search results](images/search-results-ida.png)<br>
@@ -132,8 +132,8 @@ First take note of just the 4 bytes that are highlighted, then copy all the byte
   <img src="images/bl-hex-hex-fiend.png" alt="Hex Fiend BL hex" style="background-color: transparent;" />
 </p>
 
-Replace the 4 bytes that were highlighted in IDA Pro with 00BF00BF in your hex editor
+Replace the 4 bytes that were highlighted in IDA Pro with 00BF00BF in your hex editor<br>
 
-Do **exactly the same** process, but this time searching for `XIP is still set` in IDA Pro
+Do **exactly the same process**, but this time searching for **XIP is still set** in IDA Pro<br>
 
 
