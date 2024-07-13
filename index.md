@@ -215,3 +215,7 @@ Boot the device<br>
 `irecovery -c bootx`<br>
 
 **Done!**
+
+## Contact
+
+If you are having issues with this guide or think something needs to be explained clearer, you can contact me on [Reddit](https://new.reddit.com/user/Dizzy-Candle8753) or Discord, my Discord username is **kaidenac**<br>
