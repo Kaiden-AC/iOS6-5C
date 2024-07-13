@@ -35,7 +35,7 @@ When I use angle brackets (`< >`), they indicate placeholders. Do not include th
 - [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will use **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS<br>
 
 ## Preparations
-First decrypt the RootFS DMG, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
+First decrypt the RootFS DMG from your iPhone 5 6.x iPSW, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
 `dmg extract encrypted.dmg extract.dmg -k <key>`<br>
 
 Then convert it to UDZO format<br>
@@ -45,7 +45,7 @@ Mount the DMG, take note of the mount point<br>
 `hdiutil attach udzo.dmg`<br>
 
 Enable ownership on the volume<br>
-`sudo hdiutil enableOwnership <mountpoint>`<br>
+`sudo diskutil enableOwnership <mountpoint>`<br>
 
 Create a tar from the volume<br>
 `sudo gtar -cvf fw.tar -C <mountpoint> .`<br>
@@ -78,22 +78,20 @@ Now we need to create filesystems<br>
 `/sbin/newfs_hfs -s -v Data -J -P -b 4096 -n a=4096,c=4096,e=4096 /dev/disk0s1s2`<br>
 
 ## Extracting RootFS
-Mount the System partition<br>
+Mount the new partitions<br>
 `mount_hfs /dev/disk0s1s1 /mnt1`<br>
-
-Extract the RootFS tar over SSH<br>
-`cat fw.tar | ssh -p 6414 root@localhost "cd /mnt1; tar xvf -"`<br>
-*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
-
-After that completes, we need to move files to the Data partition, first mount the Data partition<br>
 `mount_hfs /dev/disk0s1s2 /mnt2`<br>
 
-Now move files from /private/var<br>
+On macOS open another Terminal window and extract the RootFS tar over SSH<br>
+`cat fw.tar | ssh -p 6414 -oHostKeyAlgorithms=+ssh-dss root@localhost "cd /mnt1; tar xvf -"`<br>
+*Note: When asked for a password, enter "alpine" as the password*<br>
+
+After that completes, we need to move files to the Data partition, back on your device run
 `mv -v /mnt1/private/var/* /mnt2`<br>
 
-We need to edit fstab to use the new partitions, on macOS run<br>
-`scp -P 6414 root@localhost:/mnt1/private/etc/fstab ./fstab`<br>
-*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+We need to edit fstab to use the new partitions, back on macOS run<br>
+`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss root@localhost:/mnt1/private/etc/fstab ./fstab`<br>
+*Note: When asked for a password, enter "alpine" as the password*<br>
 
 Open it in nano, in macOS run<br>
 `nano fstab`<br>
@@ -102,23 +100,23 @@ And edit it to look like this<br>
 
 ![fstab](images/fstab.png)<br>
 
-Send it back to the device, in macOS run<br>
-`scp -P 6414 ./fstab root@localhost:/mnt1/private/etc`<br>
-*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+Send it back to the device<br>
+`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss ./fstab root@localhost:/mnt1/private/etc`<br>
+*Note: When asked for a password, enter "alpine" as the password*<br>
 
-Now we need to install fixkeybag, in macOS run<br>
-`scp -P 6414 ./fixkeybag root@localhost:/mnt1`<br>
-*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+Now we need to install fixkeybag<br>
+`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss ./fixkeybag root@localhost:/mnt1`<br>
+*Note: When asked for a password, enter "alpine" as the password*<br>
 
-Now create launchd.conf and set executable permissions, in macOS run<br>
+Now create launchd.conf and set executable permissions<br>
 `nano launchd.conf`<br>
 
 And enter the following contents<br>
 `bsexec .. /fixkeybag`<br>
 
-Send it to your device, in macOS run<br>
-`scp -P 6414 ./launchd.conf root@localhost:/mnt1/private/etc`<br>
-*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+Send it to your device<br>
+`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss ./launchd.conf root@localhost:/mnt1/private/etc`<br>
+*Note: When asked for a password, enter "alpine" as the password*<br>
 
 Now back on the device, set UNIX permissions to 755<br>
 `chmod 755 /mnt1/fixkeybag`<br>
@@ -153,7 +151,9 @@ Open your decompressed kernelcache in IDA Pro, make sure your settings are the s
 
 ![IDA Pro settings for kernelcache](images/kernelcache-settings-ida.png)<br>
 
-Once the file is open, navigate to **Edit > Select all** in the toolbar, then press **C**, then click **Analyze**<br>
+*Note: If you get any extra windows just click **OK***
+
+Once the file is open, navigate to **Edit > Select all** in the toolbar, then press **C**, then click **Analyze**, this may take up to an hour<br>
 *Note: If it asks "Undefine already existing code/data?" click Yes*<br>
 
 Once the kernelcache is fully analyzed, navigate to **Search > Text...**<br>
@@ -167,7 +167,7 @@ Place your cursor just before `BL` and switch to hex view<br>
 
 ![IDA Pro BL hex 1](images/bl-hex-1-ida.png)<br>
 
-Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with `00BF00BF`<br>
+Press **F2** and type `00BF00BF` and press **F2** again, this should replace the highlighted 4 bytes with `00BF00BF`<br>
 
 ![IDA Pro NOP hex 1](images/nop-hex-1-ida.png)<br>
 
@@ -181,7 +181,7 @@ Place your cursor just before `BL` and switch to hex view<br>
 
 ![IDA Pro BL hex 2](images/bl-hex-2-ida.png)<br>
 
-Press **F2** and type `00BF00BF`, this should replace the highlighted 4 bytes with `00BF00BF`<br>
+Press **F2** and type `00BF00BF` and press **F2** again, this should replace the highlighted 4 bytes with `00BF00BF`<br>
 
 ![IDA Pro NOP hex 2](images/nop-hex-2-ida.png)<br>
 
@@ -192,6 +192,9 @@ Now recompress the kernelcache<br>
 `xpwntool kernelcache.raw kernelcache.img3 -t kernelcache.dec`<br>
 
 ## Booting the device
+
+Put the device in pwndfu mode<br>
+`ipwnder_macosx`<br>
 
 Send iBSS<br>
 `irecovery -f iBSS.img3`<br>
