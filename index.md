@@ -127,6 +127,8 @@ Place your cursor just before `BL` and switch to hex view<br>
 
 First take note of just the 4 bytes that are highlighted, then copy all the bytes on that line, open the decompressed kernelcache in your hex editor and find where those bytes are, for Hex Fiend press **Option + F**, make sure in the upper left corner it is set to **Hex**, paste the bytes in and press **Next**<br>
 
-![Hex Fiend BL hex](images/bl-hex-hex-fiend.png)<br>
+<p align="left">
+  <img src="images/bl-hex-hex-fiend.png" alt="Hex Fiend BL hex" style="background-color: transparent;" />
+</p>
 
 
