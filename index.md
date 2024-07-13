@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="styles.css">
 
-# iOS 6 iPhone 5C downgrade guide
+# iOS 6 iPhone 5C tethered downgrade guide
 This guide will show you how to install iOS 6 on your iPhone 5C, please note that it is very broken, touch does **not** work, and the device will kernel panic a few seconds after booting.<br>
 
 ## Disclaimer
