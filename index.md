@@ -131,4 +131,8 @@ First take note of just the 4 bytes that are highlighted, then copy all the byte
   <img src="images/bl-hex-hex-fiend.png" alt="Hex Fiend BL hex" style="background-color: transparent;" />
 </p>
 
+Replace the 4 bytes that were highlighted in IDA Pro with 00BF00BF in your hex editor
+
+Do **exactly the same** process, but this time searching for `XIP is still set` in IDA Pro
+
 
