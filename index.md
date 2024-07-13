@@ -42,7 +42,7 @@ Create a tar from the volume<br>
 First, we need to boot the SSH ramdisk, enter DFU mode on your device and run Legacy iOS Kit<br>
 `./restore.sh`<br>
 
-Then navigate to `Other Utilities > SSH Ramdisk` and enter `11A470a` for the build number, follow the steps to boot the ramdisk, then select `Connect to SSH`<br>
+Then navigate to **Other Utilities > SSH Ramdisk** and enter **11A470a** for the build number, follow the steps to boot the ramdisk, then select `Connect to SSH`<br>
 
 Now once we are in the ramdisk, we need to partition the disk<br>
 `gptfdisk /dev/rdisk0s1`<br>
@@ -109,10 +109,10 @@ Open your decompressed kernelcache in IDA Pro, make sure your settings are the s
 
 ![IDA Pro settings for kernelcache](images/kernelcache-settings-ida.png)<br>
 
-Once the file is open, navigate to `Edit > Select all` in the toolbar, then press C, then click Analyze.<br>
+Once the file is open, navigate to `Edit > Select all` in the toolbar, then press **C**, then click **Analyze**.<br>
 *Note: If it asks "Undefine already existing code/data?" click Yes*<br>
 
-Once the kernelcache is fully analyzed, navigate to `Search > Text...`, make sure "Find all occurrences" is checked, and search for `could not find system ID`.<br>
+Once the kernelcache is fully analyzed, navigate to **Search > Text...**, make sure "Find all occurrences" is checked, and search for `could not find system ID`.<br>
 After the search is finished, you should have 4 results<br>
 
 ![IDA Pro search results](images/search-results-ida.png)<br>
