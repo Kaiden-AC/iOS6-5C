@@ -79,6 +79,38 @@ After that completes, we need to move files to the Data partition, first mount t
 Now move files from /private/var<br>
 `mv -v /mnt1/private/var/* /mnt2`<br>
 
+We need to edit fstab to use the new partitions, on macOS run<br>
+`scp -P 6414 root@localhost:/mnt1/private/etc/fstab ./fstab`<br>
+*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+
+Open it in nano, in macOS run<br>
+`nano fstab`<br>
+
+And edit it to look like this<br>
+
+![fstab](images/fstab.png)<br>
+
+Send it back to the device, in macOS run<br>
+`scp -P 6414 ./fstab root@localhost:/mnt1/private/etc`<br>
+*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+
+Now we need to install fixkeybag, in macOS run<br>
+`scp -P 6414 ./fixkeybag root@localhost:/mnt1`<br>
+*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+
+Now create launchd.conf and set executable permissions, in macOS run<br>
+`nano launchd.conf`<br>
+
+And enter the following contents<br>
+`bsexec .. /fixkeybag`<br>
+
+Send it to your device, in macOS run<br>
+`scp -P 6414 ./launchd.conf root@localhost:/mnt1/private/etc`<br>
+*Note: If you get an error, you may have to add -oHostKeyAlgorithms=+ssh-dss after the port number*<br>
+
+Now back on the device, set UNIX permissions to 755<br>
+`chmod 755 /mnt1/fixkeybag`<br>
+
 Unmount both partitions and reboot the device<br>
 `umount /mnt1 /mnt2`<br>
 `reboot_bak`<br>
@@ -129,11 +161,15 @@ Place your cursor just before `BL` and switch to hex view<br>
 First take note of just the 4 bytes that are highlighted, then copy all the bytes on that line, open the decompressed kernelcache in your hex editor and find where those bytes are, for Hex Fiend press **Option + F**, make sure in the upper left corner it is set to **Hex**, paste the bytes in and press **Next**<br>
 
 <p align="left">
-  <img src="images/bl-hex-hex-fiend.png" alt="Hex Fiend BL hex" style="background-color: transparent;" />
+  <img src="images/bl-hex-fiend.png" alt="Hex Fiend BL hex" style="background-color: transparent;" />
 </p>
 
 Replace the 4 bytes that were highlighted in IDA Pro with 00BF00BF in your hex editor<br>
 
-Do **exactly the same process**, but this time searching for "XIP is still set" in IDA Pro<br>
+<p align="left">
+  <img src="images/nop-hex-fiend.png" alt="Hex Fiend NOP hex" style="background-color: transparent;" />
+</p>
+
+Now repeat **exactly the same process**, but this time searching for "XIP is still set" in IDA Pro, and no need to repeat opening the kernelcache in IDA Pro as it's already open<br>
 
 
