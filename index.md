@@ -113,7 +113,7 @@ Once the file is open, navigate to **Edit > Select all** in the toolbar, then pr
 *Note: If it asks "Undefine already existing code/data?" click Yes*<br>
 
 Once the kernelcache is fully analyzed, navigate to **Search > Text...**<br>
-Make sure **Find all occurrences** is checked, and search for **could not find system ID**<br>
+Make sure **Find all occurrences** is checked, and search for "could not find system ID"<br>
 After the search is finished, you should have 4 results<br>
 
 ![IDA Pro search results](images/search-results-ida.png)<br>
@@ -134,6 +134,6 @@ First take note of just the 4 bytes that are highlighted, then copy all the byte
 
 Replace the 4 bytes that were highlighted in IDA Pro with 00BF00BF in your hex editor<br>
 
-Do **exactly the same process**, but this time searching for **XIP is still set** in IDA Pro<br>
+Do **exactly the same process**, but this time searching for "XIP is still set" in IDA Pro<br>
 
 
