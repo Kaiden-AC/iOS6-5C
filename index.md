@@ -11,17 +11,14 @@ I am **not** responsible for any damage to your devices caused by following this
 - [throwaway](https://x.com/throwaway167074) for telling me how they booted iOS 6 on the iPhone 5C
 - [libimobiledevice](https://github.com/libimobiledevice) for irecovery
 - [LukeZGD](https://github.com/LukeZGD) for Legacy iOS Kit
-- [dora2ios](https://x.com/dora2ios) for ipwnder_lite
-- [danzatt](https://github.com/danzatt) for reimagine
+- [dora2ios](https://x.com/dora2ios) for ipwnder_lite, xpwn (*Note: This is a fork of multiple forks, go to the repository to see who made the original and other forks*) and iBoot32Patcher (*Note: Original by [iH8sn0w](https://x.com/ih8sn0w)*)
 - [Darwin on ARM Project](https://github.com/darwin-on-arm) for image3maker
-- [iH8sn0w](https://x.com/ih8sn0w) for iBoot32Patcher
-- [OothecaPickle](https://github.com/OothecaPickle) for xpwn (*Note: This is a fork of multiple forks, go to the repository to see who made the original and other forks*)
 
 ## Note
 When I use angle brackets (`< >`), they indicate placeholders. Do not include the brackets themselves in your input. For instance, `<enter>` means press the Enter key, and `<default value - 4>` means you should input the default value minus 4.<br>
 
 ## Requirements
-- **A macOS system**, you might be able to do this on Linux but I highly recommend using macOS<br>
+- **A macOS system**, you can also do this on Linux, but this guide will be focused on macOS<br>
 - [IDA Pro](https://hex-rays.com/ida-pro) for patching the kernelcache<br>
 - **An iPhone 5 6.x iPSW, and an iPhone 5C 7.0 iPSW**, you can get these from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
 - [gnu-tar](https://formulae.brew.sh/formula/gnu-tar) to compress the RootFS<br>
@@ -29,10 +26,9 @@ When I use angle brackets (`< >`), they indicate placeholders. Do not include th
 - [irecovery](https://formulae.brew.sh/formula/libirecovery) to send bootchain components<br>
 - [Legacy iOS Kit](https://github.com/LukeZGD/Legacy-iOS-Kit) for the SSH ramdisk to install the iOS 6 RootFS on to the device<br>
 - [ipwnder_lite](https://github.com/dora2ios/ipwnder_lite) to put the device in pwndfu mode
-- [reimagine](https://github.com/Kaiden-AC/reimagine/releases/tag/v0.0.1) to decrypt firmware components<br>
-- [image3maker](https://github.com/darwin-on-arm/image3maker) to repack img3 images
+- [image3maker](https://github.com/darwin-on-arm/image3maker) to repack images into an img3 container
 - [iBoot32Patcher](https://github.com/iH8sn0w/iBoot32Patcher) to patch iBoot components<br>
-- [xpwn](https://github.com/OothecaPickle/xpwn) for **xpwntool** and **dmg**, we will use **xpwntool** to decompress and recompress the kernelcache, and **dmg** to decrypt the RootFS<br>
+- [xpwn](https://github.com/Kaiden-AC/xpwn) for **xpwntool** and **dmg**, we will use **xpwntool** to decrypt and repack some firmware components, and **dmg** to decrypt the RootFS<br>
 
 ## Preparations
 First decrypt the RootFS DMG from your iPhone 5 6.x iPSW, you can get firmware keys and file names from [The Apple Wiki](https://theapplewiki.com/wiki/Firmware)<br>
@@ -86,26 +82,24 @@ On macOS open another Terminal window and extract the RootFS tar over SSH<br>
 `cat fw.tar | ssh -p 6414 -oHostKeyAlgorithms=+ssh-dss root@localhost "cd /mnt1; tar xvf -"`<br>
 *Note: When asked for a password, enter "alpine" as the password*<br>
 
-After that completes, we need to move files to the Data partition, back on your device run
+After that completes, we need to move files to the Data partition, back on your device run<br>
 `mv -v /mnt1/private/var/* /mnt2`<br>
 
-We need to edit fstab to use the new partitions, back on macOS run<br>
-`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss root@localhost:/mnt1/private/etc/fstab ./fstab`<br>
-*Note: When asked for a password, enter "alpine" as the password*<br>
-
-Open it in nano, in macOS run<br>
+We need to edit fstab to use the new partitions, back on macOS, create a new fstab file<br>
 `nano fstab`<br>
 
-And edit it to look like this<br>
+It's contents should be the following:<br>
+```
+/dev/disk0s1s1 / hfs ro 0 1
+/dev/disk0s1s2 /private/var hfs rw,nosuid,nodev 0 2
+```
 
-![fstab](images/fstab.png)<br>
-
-Send it back to the device<br>
-`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss ./fstab root@localhost:/mnt1/private/etc`<br>
+Send it to the device<br>
+`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss fstab root@localhost:/mnt1/private/etc`<br>
 *Note: When asked for a password, enter "alpine" as the password*<br>
 
 Now we need to install fixkeybag<br>
-`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss ./fixkeybag root@localhost:/mnt1`<br>
+`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss fixkeybag root@localhost:/mnt1`<br>
 *Note: When asked for a password, enter "alpine" as the password*<br>
 
 Now create launchd.conf and set executable permissions<br>
@@ -115,7 +109,7 @@ And enter the following contents<br>
 `bsexec .. /fixkeybag`<br>
 
 Send it to your device<br>
-`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss ./launchd.conf root@localhost:/mnt1/private/etc`<br>
+`scp -P 6414 -oHostKeyAlgorithms=+ssh-dss launchd.conf root@localhost:/mnt1/private/etc`<br>
 *Note: When asked for a password, enter "alpine" as the password*<br>
 
 Now back on the device, set UNIX permissions to 755<br>
@@ -127,22 +121,22 @@ Unmount both partitions and reboot the device<br>
 
 ## Patching boot components
 First decrypt iBSS and iBEC from your iPhone 5C 7.0 iPSW<br>
-`reimagine iBSS.boardconfig.RELEASE.dfu iBSS.raw -iv <iv> -k <key> -r`<br>
-`reimagine iBEC.boardconfig.RELEASE.dfu iBEC.raw -iv <iv> -k <key> -r`<br>
+`xpwntool iBSS.boardconfig.RELEASE.dfu iBSS.raw -iv <iv> -k <key>`<br>
+`xpwntool iBEC.boardconfig.RELEASE.dfu iBEC.raw -iv <iv> -k <key>`<br>
 
 Patch the iBSS and iBEC<br>
-`iBoot32Patcher iBSS.raw iBSS.patched`<br>
-`iBoot32Patcher iBEC.raw iBEC.patched -b "-v amfi=0xff cs_enforcement_disable=1"`<br>
+`iBoot32Patcher iBSS.raw iBSS.patched --rsa`<br>
+`iBoot32Patcher iBEC.raw iBEC.patched --rsa -b "-v amfi=0xff cs_enforcement_disable=1"`<br>
 
 Pack the iBSS and iBEC into an img3 container<br>
 `image3maker -f iBSS.patched -t ibss -o iBSS.img3`<br>
 `image3maker -f iBEC.patched -t ibec -o iBEC.img3`<br>
 
 Decrypt the DeviceTree from your iPhone 5 6.x iPSW<br>
-`reimagine DeviceTree.boardconfig.img3 devicetree.img3 -iv <iv> -k <key>`<br>
+`xpwntool DeviceTree.boardconfig.img3 devicetree.img3 -iv <iv> -k <key> –decrypt`<br>
 
 Decrypt the kernelcache from your iPhone 5 6.x iPSW<br>
-`reimagine kernelcache.release.boardconfig kernelcache.dec -iv <iv> -k <key>`<br>
+`xpwntool kernelcache.release.boardconfig kernelcache.dec -iv <iv> -k <key> –decrypt`<br>
 
 Decompress the kernelcache from your iPhone 5 6.x iPSW<br>
 `xpwntool kernelcache.release.boardconfig kernelcache.raw -iv <iv> -k <key>`<br>
@@ -188,7 +182,7 @@ Press **F2** and type `00BF00BF` and press **F2** again, this should replace the
 Now switch back to IDA view and navigate to **Edit > Patch program > Apply patches to input file...**<br>
 Leave default settings and press **OK**<br>
 
-Now recompress the kernelcache<br>
+Now repack the kernelcache<br>
 `xpwntool kernelcache.raw kernelcache.img3 -t kernelcache.dec`<br>
 
 ## Booting the device
@@ -218,4 +212,4 @@ Boot the device<br>
 
 ## Contact
 
-If you are having issues with this guide or think something needs to be explained clearer, you can contact me on [Reddit](https://new.reddit.com/user/Dizzy-Candle8753) or Discord, my Discord username is **kaidenac**<br>
+If you are having issues with this guide or think something needs to be explained clearer, you can contact me on [Reddit](https://new.reddit.com/user/Dizzy-Candle8753), [X (formerly Twitter)](https://x.com/KaidenAC) or Discord, my Discord username is **kaidenac**<br>
